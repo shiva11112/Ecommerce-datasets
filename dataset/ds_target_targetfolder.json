@@ -1,0 +1,32 @@
+{
+	"name": "ds_target_targetfolder",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "ds_target_targetfolder",
+			"type": "LinkedServiceReference"
+		},
+		"parameters": {
+			"sourceFileName": {
+				"type": "string"
+			}
+		},
+		"annotations": [],
+		"type": "DelimitedText",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobFSLocation",
+				"fileName": {
+					"value": "@dataset().sourceFileName",
+					"type": "Expression"
+				},
+				"fileSystem": "targetfolder"
+			},
+			"columnDelimiter": ",",
+			"escapeChar": "\\",
+			"firstRowAsHeader": true,
+			"quoteChar": "\""
+		},
+		"schema": []
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

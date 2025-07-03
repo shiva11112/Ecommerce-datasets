@@ -1,0 +1,49 @@
+{
+	"name": "ds_dev_source_rawfiles_olist_customers_dataset",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "ls_dev_source_rawfiles_olist_customers_dataset",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "DelimitedText",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobFSLocation",
+				"fileName": "olist_customers_dataset.csv",
+				"fileSystem": "rawfiles"
+			},
+			"columnDelimiter": ",",
+			"escapeChar": "\\",
+			"firstRowAsHeader": true,
+			"quoteChar": "\""
+		},
+		"schema": [
+			{
+				"name": "customer_id",
+				"type": "String"
+			},
+			{
+				"name": "customer_first_name",
+				"type": "String"
+			},
+			{
+				"name": "customer_last_name",
+				"type": "String"
+			},
+			{
+				"name": "customer_zip_code_prefix",
+				"type": "String"
+			},
+			{
+				"name": "customer_city",
+				"type": "String"
+			},
+			{
+				"name": "customer_state",
+				"type": "String"
+			}
+		]
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

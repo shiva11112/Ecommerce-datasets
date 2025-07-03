@@ -1,0 +1,9 @@
+{
+	"name": "learn-etl-datafactory",
+	"location": "centralindia",
+	"identity": {
+		"type": "SystemAssigned",
+		"principalId": "61ee8437-6616-4f2b-8dc6-aa891cd92f9f",
+		"tenantId": "ccb3002c-6ffe-4f4a-b803-39ffb8f09ea6"
+	}
+}
