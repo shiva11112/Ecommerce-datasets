@@ -1,0 +1,38 @@
+{
+	"name": "ds_bronze_continer",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "ls_bronze_container",
+			"type": "LinkedServiceReference"
+		},
+		"parameters": {
+			"folderName": {
+				"type": "string"
+			},
+			"tableName": {
+				"type": "string"
+			}
+		},
+		"annotations": [],
+		"type": "DelimitedText",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobFSLocation",
+				"fileName": {
+					"value": "@dataset().tableName",
+					"type": "Expression"
+				},
+				"folderPath": {
+					"value": "@dataset().folderName",
+					"type": "Expression"
+				},
+				"fileSystem": "bronze"
+			},
+			"columnDelimiter": ",",
+			"escapeChar": "\\",
+			"firstRowAsHeader": true,
+			"quoteChar": "\""
+		},
+		"schema": []
+	}
+}
