@@ -1,0 +1,63 @@
+{
+	"$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentParameters.json#",
+	"contentVersion": "1.0.0.0",
+	"parameters": {
+		"factoryName": {
+			"value": "learn-etl-datafactory"
+		},
+		"ds_target_targetfolder_accountKey": {
+			"value": ""
+		},
+		"ls_azure_sql_connection_password": {
+			"value": ""
+		},
+		"ls_bronze_container_accountKey": {
+			"value": ""
+		},
+		"ls_dev_source_rawfiles_olist_customers_dataset_accountKey": {
+			"value": ""
+		},
+		"ls_dev_target_targetfolder_accountKey": {
+			"value": ""
+		},
+		"ls_source_rawfiles_folder_accountKey": {
+			"value": ""
+		},
+		"ls_source_wildpath_csv_accountKey": {
+			"value": ""
+		},
+		"ds_target_targetfolder_properties_typeProperties_url": {
+			"value": "https://infostorageaccount.dfs.core.windows.net/"
+		},
+		"ls_azure_sql_connection_properties_typeProperties_server": {
+			"value": "asqladventureworks.database.windows.net"
+		},
+		"ls_azure_sql_connection_properties_typeProperties_database": {
+			"value": "asqldatabaseadventureworks"
+		},
+		"ls_azure_sql_connection_properties_typeProperties_userName": {
+			"value": "shivaadmin"
+		},
+		"ls_bronze_container_properties_typeProperties_url": {
+			"value": "https://infostorageaccount.dfs.core.windows.net/"
+		},
+		"ls_dev_source_rawfiles_olist_customers_dataset_properties_typeProperties_url": {
+			"value": "https://infostorageaccount.dfs.core.windows.net/"
+		},
+		"ls_dev_target_targetfolder_properties_typeProperties_url": {
+			"value": "https://infostorageaccount.dfs.core.windows.net/"
+		},
+		"ls_source_rawfiles_folder_properties_typeProperties_url": {
+			"value": "https://infostorageaccount.dfs.core.windows.net/"
+		},
+		"ls_source_wildpath_csv_properties_typeProperties_url": {
+			"value": "https://infostorageaccount.dfs.core.windows.net/"
+		},
+		"containerUri": {
+			"value": ""
+		},
+		"containerSasToken": {
+			"value": ""
+		}
+	}
+}
