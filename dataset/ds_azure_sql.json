@@ -2,11 +2,69 @@
 	"name": "ds_azure_sql",
 	"properties": {
 		"linkedServiceName": {
-			"referenceName": "ls_azure_sql_connection",
+			"referenceName": "ls_azure_sql_conn_tables",
 			"type": "LinkedServiceReference"
+		},
+		"parameters": {
+			"TABLE_SCHEMA": {
+				"type": "string"
+			},
+			"TABLE_NAME": {
+				"type": "string"
+			}
+		},
+		"folder": {
+			"name": "Copy Data"
 		},
 		"annotations": [],
 		"type": "AzureSqlTable",
-		"schema": []
-	}
+		"schema": [
+			{
+				"name": "ProductKey",
+				"type": "smallint",
+				"precision": 5
+			},
+			{
+				"name": "Product",
+				"type": "nvarchar"
+			},
+			{
+				"name": "StandardCost",
+				"type": "money",
+				"precision": 19,
+				"scale": 4
+			},
+			{
+				"name": "Color",
+				"type": "nvarchar"
+			},
+			{
+				"name": "Subcategory",
+				"type": "nvarchar"
+			},
+			{
+				"name": "Category",
+				"type": "nvarchar"
+			},
+			{
+				"name": "BackgroundColorFormat",
+				"type": "nvarchar"
+			},
+			{
+				"name": "FontColorFormat",
+				"type": "nvarchar"
+			}
+		],
+		"typeProperties": {
+			"schema": {
+				"value": "@dataset().TABLE_SCHEMA",
+				"type": "Expression"
+			},
+			"table": {
+				"value": "@dataset().TABLE_NAME",
+				"type": "Expression"
+			}
+		}
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
 }

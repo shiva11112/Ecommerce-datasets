@@ -1,0 +1,272 @@
+{
+	"name": "pl_azure_sql_to_adls",
+	"properties": {
+		"activities": [
+			{
+				"name": "Lookup Tables",
+				"type": "Lookup",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"source": {
+						"type": "AzureSqlSource",
+						"sqlReaderQuery": "select * from config_table where is_active = 1 and layer = 'bronze'",
+						"queryTimeout": "02:00:00",
+						"partitionOption": "None"
+					},
+					"dataset": {
+						"referenceName": "ds_azure_sql_without_parameters",
+						"type": "DatasetReference"
+					},
+					"firstRowOnly": false
+				}
+			},
+			{
+				"name": "ForEach Table",
+				"type": "ForEach",
+				"dependsOn": [
+					{
+						"activity": "Lookup Tables",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"items": {
+						"value": "@activity('Lookup Tables').output.value",
+						"type": "Expression"
+					},
+					"batchCount": 10,
+					"activities": [
+						{
+							"name": "If Condition1",
+							"type": "IfCondition",
+							"dependsOn": [],
+							"userProperties": [],
+							"typeProperties": {
+								"expression": {
+									"value": "@equals(item().load_type, 'Full')",
+									"type": "Expression"
+								},
+								"ifFalseActivities": [
+									{
+										"name": "Copy incremental data",
+										"type": "Copy",
+										"dependsOn": [],
+										"policy": {
+											"timeout": "0.12:00:00",
+											"retry": 0,
+											"retryIntervalInSeconds": 30,
+											"secureOutput": false,
+											"secureInput": false
+										},
+										"userProperties": [],
+										"typeProperties": {
+											"source": {
+												"type": "AzureSqlSource",
+												"sqlReaderQuery": {
+													"value": "select * from @{item().schema_name}.@{item().table_name} where @{item().delta_column} > '@{item().delta_col_timestamp}'",
+													"type": "Expression"
+												},
+												"queryTimeout": "02:00:00",
+												"partitionOption": "None"
+											},
+											"sink": {
+												"type": "DelimitedTextSink",
+												"storeSettings": {
+													"type": "AzureBlobFSWriteSettings"
+												},
+												"formatSettings": {
+													"type": "DelimitedTextWriteSettings",
+													"quoteAllText": true,
+													"fileExtension": ".txt"
+												}
+											},
+											"enableStaging": false,
+											"translator": {
+												"type": "TabularTranslator",
+												"typeConversion": true,
+												"typeConversionSettings": {
+													"allowDataTruncation": true,
+													"treatBooleanAsNumber": false
+												}
+											}
+										},
+										"inputs": [
+											{
+												"referenceName": "ds_azure_sql",
+												"type": "DatasetReference",
+												"parameters": {
+													"TABLE_SCHEMA": "a",
+													"TABLE_NAME": "b"
+												}
+											}
+										],
+										"outputs": [
+											{
+												"referenceName": "ds_adls_gen2",
+												"type": "DatasetReference",
+												"parameters": {
+													"FILE_NAME": {
+														"value": "@concat(item().table_name, '.', item().target_type)",
+														"type": "Expression"
+													},
+													"FOLDER_PATH": {
+														"value": "@concat(\n    'Raw/',\n    item().load_type, '/',\n    formatDateTime(utcNow(), 'yyyy'), '/',\n    formatDateTime(utcNow(), 'MM'), '/',\n    formatDateTime(utcNow(), 'dd'), '/',\n    item().table_name\n)",
+														"type": "Expression"
+													},
+													"ContainerName": {
+														"value": "@{item().layer}",
+														"type": "Expression"
+													}
+												}
+											}
+										]
+									}
+								],
+								"ifTrueActivities": [
+									{
+										"name": "Copy data Full load",
+										"type": "Copy",
+										"dependsOn": [],
+										"policy": {
+											"timeout": "0.12:00:00",
+											"retry": 0,
+											"retryIntervalInSeconds": 30,
+											"secureOutput": false,
+											"secureInput": false
+										},
+										"userProperties": [],
+										"typeProperties": {
+											"source": {
+												"type": "AzureSqlSource",
+												"queryTimeout": "02:00:00",
+												"partitionOption": "None"
+											},
+											"sink": {
+												"type": "DelimitedTextSink",
+												"storeSettings": {
+													"type": "AzureBlobFSWriteSettings"
+												},
+												"formatSettings": {
+													"type": "DelimitedTextWriteSettings",
+													"quoteAllText": true,
+													"fileExtension": ".txt"
+												}
+											},
+											"enableStaging": false,
+											"translator": {
+												"type": "TabularTranslator",
+												"typeConversion": true,
+												"typeConversionSettings": {
+													"allowDataTruncation": true,
+													"treatBooleanAsNumber": false
+												}
+											}
+										},
+										"inputs": [
+											{
+												"referenceName": "ds_azure_sql",
+												"type": "DatasetReference",
+												"parameters": {
+													"TABLE_SCHEMA": {
+														"value": "@item().TABLE_SCHEMA",
+														"type": "Expression"
+													},
+													"TABLE_NAME": {
+														"value": "@item().TABLE_NAME",
+														"type": "Expression"
+													}
+												}
+											}
+										],
+										"outputs": [
+											{
+												"referenceName": "ds_adls_gen2",
+												"type": "DatasetReference",
+												"parameters": {
+													"FILE_NAME": {
+														"value": "@item().TABLE_NAME",
+														"type": "Expression"
+													},
+													"FOLDER_PATH": {
+														"value": "@concat(\n    'Raw/',\n    item().load_type, '/',\n    formatDateTime(utcNow(), 'yyyy'), '/',\n    formatDateTime(utcNow(), 'MM'), '/',\n    formatDateTime(utcNow(), 'dd')\n)",
+														"type": "Expression"
+													},
+													"ContainerName": {
+														"value": "@{item().layer}",
+														"type": "Expression"
+													}
+												}
+											}
+										]
+									}
+								]
+							}
+						},
+						{
+							"name": "Silver layer notebook",
+							"type": "DatabricksNotebook",
+							"dependsOn": [
+								{
+									"activity": "If Condition1",
+									"dependencyConditions": [
+										"Succeeded"
+									]
+								}
+							],
+							"policy": {
+								"timeout": "0.12:00:00",
+								"retry": 0,
+								"retryIntervalInSeconds": 30,
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"notebookPath": "/Users/shiva11112@gmail.com/ADLS to Databricks",
+								"baseParameters": {
+									"bronze_path": {
+										"value": "@concat(\n    'Raw/',\n    item().load_type, '/',\n    formatDateTime(utcNow(), 'yyyy'), '/',\n    formatDateTime(utcNow(), 'MM'), '/',\n    formatDateTime(utcNow(), 'dd'), '/',\n    item().table_name, '/',\n    item().table_name, '.', item().target_type\n)",
+										"type": "Expression"
+									},
+									"delta_col_timestamp": {
+										"value": "'@{item().delta_col_timestamp}'",
+										"type": "Expression"
+									},
+									"delta_column": {
+										"value": "@{item().delta_column}",
+										"type": "Expression"
+									},
+									"silver_path": {
+										"value": "@concat(\n    item().silver_path, '.', item().silver_format\n)",
+										"type": "Expression"
+									}
+								}
+							},
+							"linkedServiceName": {
+								"referenceName": "ls_adb",
+								"type": "LinkedServiceReference"
+							}
+						}
+					]
+				}
+			}
+		],
+		"folder": {
+			"name": "Copy Data"
+		},
+		"annotations": [],
+		"lastPublishTime": "2025-11-23T09:35:33Z"
+	},
+	"type": "Microsoft.DataFactory/factories/pipelines"
+}
