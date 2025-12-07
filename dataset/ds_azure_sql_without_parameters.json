@@ -1,0 +1,16 @@
+{
+	"name": "ds_azure_sql_without_parameters",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "ls_azure_sql_conn_tables",
+			"type": "LinkedServiceReference"
+		},
+		"folder": {
+			"name": "Copy Data"
+		},
+		"annotations": [],
+		"type": "AzureSqlTable",
+		"schema": []
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}
