@@ -1,12 +1,12 @@
 {
-	"name": "ds_azure_sql_dynamic",
+	"name": "ds_sql_to_sql_sink",
 	"properties": {
 		"linkedServiceName": {
 			"referenceName": "ls_azure_sql",
 			"type": "LinkedServiceReference",
 			"parameters": {
 				"sqlServerName": {
-					"value": "@dataset().serverName",
+					"value": "@dataset().sqlServerName",
 					"type": "Expression"
 				},
 				"databaseName": {
@@ -16,7 +16,7 @@
 			}
 		},
 		"parameters": {
-			"serverName": {
+			"sqlServerName": {
 				"type": "string"
 			},
 			"databaseName": {

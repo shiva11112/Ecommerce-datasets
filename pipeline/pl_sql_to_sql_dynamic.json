@@ -60,18 +60,8 @@
 				],
 				"outputs": [
 					{
-						"referenceName": "ds_azure_sql_dynamic",
-						"type": "DatasetReference",
-						"parameters": {
-							"serverName": {
-								"value": "@pipeline().parameters.pl_serverName",
-								"type": "Expression"
-							},
-							"databaseName": {
-								"value": "@pipeline().parameters.pl_sinkDatabaseName",
-								"type": "Expression"
-							}
-						}
+						"referenceName": "ds_sql_to_sql_sink",
+						"type": "DatasetReference"
 					}
 				]
 			}
