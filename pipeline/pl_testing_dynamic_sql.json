@@ -1,0 +1,112 @@
+{
+	"name": "pl_testing_dynamic_sql",
+	"properties": {
+		"activities": [
+			{
+				"name": "Copy data1",
+				"type": "Copy",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"source": {
+						"type": "DelimitedTextSource",
+						"storeSettings": {
+							"type": "AzureBlobFSReadSettings",
+							"recursive": true,
+							"enablePartitionDiscovery": false
+						},
+						"formatSettings": {
+							"type": "DelimitedTextReadSettings"
+						}
+					},
+					"sink": {
+						"type": "DelimitedTextSink",
+						"storeSettings": {
+							"type": "AzureBlobFSWriteSettings"
+						},
+						"formatSettings": {
+							"type": "DelimitedTextWriteSettings",
+							"quoteAllText": true,
+							"fileExtension": ".txt"
+						}
+					},
+					"enableStaging": false,
+					"translator": {
+						"type": "TabularTranslator",
+						"typeConversion": true,
+						"typeConversionSettings": {
+							"allowDataTruncation": true,
+							"treatBooleanAsNumber": false
+						}
+					}
+				},
+				"inputs": [
+					{
+						"referenceName": "ds_adls_gen2",
+						"type": "DatasetReference",
+						"parameters": {
+							"containerName": {
+								"value": "@variables('pl_containerName')",
+								"type": "Expression"
+							},
+							"fileName": {
+								"value": "@variables('pl_fileName')",
+								"type": "Expression"
+							},
+							"folderName": {
+								"value": "@variables('pl_folderName')",
+								"type": "Expression"
+							}
+						}
+					}
+				],
+				"outputs": [
+					{
+						"referenceName": "ds_adls_gen2_target",
+						"type": "DatasetReference",
+						"parameters": {
+							"p_ds_containterName": {
+								"value": "@variables('pl_containerName')",
+								"type": "Expression"
+							},
+							"p_ds_folderName": {
+								"value": "@variables('pl_folderName')",
+								"type": "Expression"
+							},
+							"p_ds_fileName": {
+								"value": "@variables('pl_trg_fileName')",
+								"type": "Expression"
+							}
+						}
+					}
+				]
+			}
+		],
+		"variables": {
+			"pl_containerName": {
+				"type": "String",
+				"defaultValue": "bronze"
+			},
+			"pl_folderName": {
+				"type": "String",
+				"defaultValue": "Product"
+			},
+			"pl_fileName": {
+				"type": "String",
+				"defaultValue": "Product.csv"
+			},
+			"pl_trg_fileName": {
+				"type": "String",
+				"defaultValue": "Product_bronze.csv"
+			}
+		},
+		"annotations": []
+	}
+}
