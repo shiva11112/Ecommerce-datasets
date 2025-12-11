@@ -94,5 +94,14 @@
 			"name": "azure-ETL-project"
 		},
 		"annotations": []
+	},
+	"policy": {
+		"logging": {
+			"enableCopyActivityLog": true,
+			"copyActivityLogSettings": {
+				"logLevel": "Verbose",
+				"enableReliableLogging": false
+			}
+		}
 	}
 }
