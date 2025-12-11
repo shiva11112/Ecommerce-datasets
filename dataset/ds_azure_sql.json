@@ -1,0 +1,27 @@
+{
+	"name": "ds_azure_sql",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "ls_azure_sql_server",
+			"type": "LinkedServiceReference",
+			"parameters": {
+				"p_ls_databaseName": {
+					"value": "@dataset().p_ds_databaseName",
+					"type": "Expression"
+				}
+			}
+		},
+		"parameters": {
+			"p_ds_databaseName": {
+				"type": "string",
+				"defaultValue": "asqldatabaseadventureworks"
+			}
+		},
+		"folder": {
+			"name": "Test Datasets"
+		},
+		"annotations": [],
+		"type": "AzureSqlTable",
+		"schema": []
+	}
+}
