@@ -61,7 +61,17 @@
 				"outputs": [
 					{
 						"referenceName": "ds_sql_to_sql_sink",
-						"type": "DatasetReference"
+						"type": "DatasetReference",
+						"parameters": {
+							"sqlServerName": {
+								"value": "@pipeline().parameters.pl_serverName",
+								"type": "Expression"
+							},
+							"databaseName": {
+								"value": "@pipeline().parameters.pl_databaseName",
+								"type": "Expression"
+							}
+						}
 					}
 				]
 			}
