@@ -4,19 +4,20 @@
 	"properties": {
 		"parameters": {
 			"p_ls_databaseName": {
-				"type": "string"
+				"type": "string",
+				"defaultValue": "asqldatabaseadventureworks"
 			}
 		},
 		"annotations": [],
 		"type": "AzureSqlDatabase",
 		"typeProperties": {
 			"server": "asqladventureworks.database.windows.net",
-			"database": "asqldatabaseadventureworks",
+			"database": "@{linkedService().p_ls_databaseName}",
 			"encrypt": "mandatory",
 			"trustServerCertificate": false,
 			"authenticationType": "SQL",
 			"userName": "shivaadmin",
-			"encryptedCredential": "ew0KICAiVmVyc2lvbiI6ICIyMDE3LTExLTMwIiwNCiAgIlByb3RlY3Rpb25Nb2RlIjogIktleSIsDQogICJTZWNyZXRDb250ZW50VHlwZSI6ICJQbGFpbnRleHQiLA0KICAiQ3JlZGVudGlhbElkIjogIkRBVEFGQUNUT1JZQDZCNzU5MDcwLTAxQ0YtNDVDMy05MzRDLTIwMUVFNzU4NkU5M180N2M5NTlkYi00ZTgwLTRkYjgtOGNlMi04YTBjODY1MmFhODYiDQp9"
+			"encryptedCredential": "ew0KICAiVmVyc2lvbiI6ICIyMDE3LTExLTMwIiwNCiAgIlByb3RlY3Rpb25Nb2RlIjogIktleSIsDQogICJTZWNyZXRDb250ZW50VHlwZSI6ICJQbGFpbnRleHQiLA0KICAiQ3JlZGVudGlhbElkIjogIkRBVEFGQUNUT1JZQDZCNzU5MDcwLTAxQ0YtNDVDMy05MzRDLTIwMUVFNzU4NkU5M185MjI3NTk4OC1jMjVhLTRhM2EtYmZjOS05NDAwNWE1MTVkYTciDQp9"
 		}
 	}
 }
