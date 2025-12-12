@@ -23,7 +23,8 @@
 					"sink": {
 						"type": "AzureSqlSink",
 						"writeBehavior": "insert",
-						"sqlWriterUseTableLock": false
+						"sqlWriterUseTableLock": false,
+						"disableMetricsCollection": false
 					},
 					"enableStaging": false,
 					"translator": {
@@ -69,7 +70,7 @@
 								"type": "Expression"
 							},
 							"p_ds_tableName": {
-								"value": "@pipeline().parameters.p_pl_tableName",
+								"value": "@pipeline().parameters.p_pl_trgt_databaseName",
 								"type": "Expression"
 							}
 						}
@@ -79,16 +80,20 @@
 		],
 		"parameters": {
 			"p_pl_databaseName": {
-				"type": "string"
+				"type": "string",
+				"defaultValue": "asqldatabaseadventureworks"
 			},
 			"p_pl_schemaName": {
-				"type": "string"
+				"type": "string",
+				"defaultValue": "dbo"
 			},
 			"p_pl_tableName": {
-				"type": "string"
+				"type": "string",
+				"defaultValue": "Product"
 			},
 			"p_pl_trgt_databaseName": {
-				"type": "string"
+				"type": "string",
+				"defaultValue": "asqldatabase-sink"
 			}
 		},
 		"folder": {
