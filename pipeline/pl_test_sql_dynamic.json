@@ -70,7 +70,7 @@
 								"type": "Expression"
 							},
 							"p_ds_tableName": {
-								"value": "@pipeline().parameters.p_pl_trgt_databaseName",
+								"value": "@pipeline().parameters.p_pl_tableName",
 								"type": "Expression"
 							}
 						}
