@@ -5,7 +5,14 @@
 			{
 				"name": "Copy data SQL to SQL",
 				"type": "Copy",
-				"dependsOn": [],
+				"dependsOn": [
+					{
+						"activity": "Lookup tables",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
 				"policy": {
 					"timeout": "0.12:00:00",
 					"retry": 0,
@@ -77,6 +84,36 @@
 						}
 					}
 				]
+			},
+			{
+				"name": "Lookup tables",
+				"type": "Lookup",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"source": {
+						"type": "AzureSqlSource",
+						"sqlReaderQuery": "SELECT \n    TABLE_CATALOG,\n    TABLE_SCHEMA,\n    TABLE_NAME,\n    TABLE_TYPE\nFROM INFORMATION_SCHEMA.TABLES\nWHERE TABLE_TYPE = 'BASE TABLE'\nORDER BY TABLE_SCHEMA, TABLE_NAME;",
+						"queryTimeout": "02:00:00",
+						"partitionOption": "None"
+					},
+					"dataset": {
+						"referenceName": "ds_azure_sql",
+						"type": "DatasetReference",
+						"parameters": {
+							"p_ds_databaseName": "a",
+							"p_ds_schemaName": "b",
+							"p_ds_tableName": "c"
+						}
+					}
+				}
 			}
 		],
 		"parameters": {
