@@ -5,14 +5,7 @@
 			{
 				"name": "Copy data SQL to SQL",
 				"type": "Copy",
-				"dependsOn": [
-					{
-						"activity": "Lookup tables",
-						"dependencyConditions": [
-							"Succeeded"
-						]
-					}
-				],
+				"dependsOn": [],
 				"policy": {
 					"timeout": "0.12:00:00",
 					"retry": 0,
@@ -101,17 +94,42 @@
 					"source": {
 						"type": "AzureSqlSource",
 						"sqlReaderQuery": "SELECT TABLE_CATALOG, TABLE_SCHEMA, TABLE_NAME, TABLE_TYPE FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_TYPE = 'BASE TABLE' ORDER BY TABLE_SCHEMA, TABLE_NAME;",
-						"queryTimeout": "02:00:00",
+						"queryTimeout": "01:00:00",
 						"partitionOption": "None"
 					},
 					"dataset": {
 						"referenceName": "ds_azure_sql",
 						"type": "DatasetReference",
 						"parameters": {
-							"p_ds_databaseName": "a",
+							"p_ds_databaseName": "asqldatabaseadventureworks",
 							"p_ds_schemaName": "b",
 							"p_ds_tableName": "c"
 						}
+					},
+					"firstRowOnly": false
+				}
+			},
+			{
+				"name": "Set variable for table names",
+				"type": "SetVariable",
+				"dependsOn": [
+					{
+						"activity": "Lookup tables",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"variableName": "tableNames",
+					"value": {
+						"value": "@activity('Lookup tables').output.value.TABLE_NAME",
+						"type": "Expression"
 					}
 				}
 			}
@@ -132,6 +150,14 @@
 			"p_pl_trgt_databaseName": {
 				"type": "string",
 				"defaultValue": "asqldatabase-sink"
+			}
+		},
+		"variables": {
+			"tableNamesArray": {
+				"type": "Array"
+			},
+			"tableNames": {
+				"type": "String"
 			}
 		},
 		"folder": {
