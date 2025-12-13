@@ -57,7 +57,7 @@
 								"type": "Expression"
 							},
 							"fileName": {
-								"value": "@variables('pl_fileName')",
+								"value": "a",
 								"type": "Expression"
 							},
 							"folderName": {
