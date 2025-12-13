@@ -3,82 +3,6 @@
 	"properties": {
 		"activities": [
 			{
-				"name": "Copy data SQL to SQL",
-				"type": "Copy",
-				"dependsOn": [],
-				"policy": {
-					"timeout": "0.12:00:00",
-					"retry": 0,
-					"retryIntervalInSeconds": 30,
-					"secureOutput": false,
-					"secureInput": false
-				},
-				"userProperties": [],
-				"typeProperties": {
-					"source": {
-						"type": "AzureSqlSource",
-						"queryTimeout": "02:00:00",
-						"partitionOption": "None"
-					},
-					"sink": {
-						"type": "AzureSqlSink",
-						"writeBehavior": "insert",
-						"sqlWriterUseTableLock": false,
-						"tableOption": "autoCreate",
-						"disableMetricsCollection": false
-					},
-					"enableStaging": false,
-					"translator": {
-						"type": "TabularTranslator",
-						"typeConversion": true,
-						"typeConversionSettings": {
-							"allowDataTruncation": true,
-							"treatBooleanAsNumber": false
-						}
-					}
-				},
-				"inputs": [
-					{
-						"referenceName": "ds_azure_sql",
-						"type": "DatasetReference",
-						"parameters": {
-							"p_ds_databaseName": {
-								"value": "@pipeline().parameters.p_pl_databaseName",
-								"type": "Expression"
-							},
-							"p_ds_schemaName": {
-								"value": "@pipeline().parameters.p_pl_schemaName",
-								"type": "Expression"
-							},
-							"p_ds_tableName": {
-								"value": "@pipeline().parameters.p_pl_tableName",
-								"type": "Expression"
-							}
-						}
-					}
-				],
-				"outputs": [
-					{
-						"referenceName": "ds_azure_sql",
-						"type": "DatasetReference",
-						"parameters": {
-							"p_ds_databaseName": {
-								"value": "@pipeline().parameters.p_pl_trgt_databaseName",
-								"type": "Expression"
-							},
-							"p_ds_schemaName": {
-								"value": "@pipeline().parameters.p_pl_schemaName",
-								"type": "Expression"
-							},
-							"p_ds_tableName": {
-								"value": "@pipeline().parameters.p_pl_tableName",
-								"type": "Expression"
-							}
-						}
-					}
-				]
-			},
-			{
 				"name": "Lookup tables",
 				"type": "Lookup",
 				"dependsOn": [],
@@ -110,8 +34,8 @@
 				}
 			},
 			{
-				"name": "Set variable for table names",
-				"type": "SetVariable",
+				"name": "ForEach values",
+				"type": "ForEach",
 				"dependsOn": [
 					{
 						"activity": "Lookup tables",
@@ -120,17 +44,86 @@
 						]
 					}
 				],
-				"policy": {
-					"secureOutput": false,
-					"secureInput": false
-				},
 				"userProperties": [],
 				"typeProperties": {
-					"variableName": "tableNames",
-					"value": {
-						"value": "@activity('Lookup tables').output.value.TABLE_NAME",
+					"items": {
+						"value": "@activity('Lookup tables').output.value",
 						"type": "Expression"
-					}
+					},
+					"isSequential": true,
+					"activities": [
+						{
+							"name": "Copy data1",
+							"type": "Copy",
+							"dependsOn": [],
+							"policy": {
+								"timeout": "0.12:00:00",
+								"retry": 0,
+								"retryIntervalInSeconds": 30,
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"source": {
+									"type": "AzureSqlSource",
+									"sqlReaderQuery": {
+										"value": "@concat('select * from ',item().TABLE_NAME)",
+										"type": "Expression"
+									},
+									"queryTimeout": "02:00:00",
+									"partitionOption": "None"
+								},
+								"sink": {
+									"type": "AzureSqlSink",
+									"writeBehavior": "insert",
+									"sqlWriterUseTableLock": false,
+									"tableOption": "autoCreate",
+									"disableMetricsCollection": false
+								},
+								"enableStaging": false,
+								"translator": {
+									"type": "TabularTranslator",
+									"typeConversion": true,
+									"typeConversionSettings": {
+										"allowDataTruncation": true,
+										"treatBooleanAsNumber": false
+									}
+								}
+							},
+							"inputs": [
+								{
+									"referenceName": "ds_azure_sql",
+									"type": "DatasetReference",
+									"parameters": {
+										"p_ds_databaseName": "asqldatabaseadventureworks",
+										"p_ds_schemaName": "b",
+										"p_ds_tableName": "c"
+									}
+								}
+							],
+							"outputs": [
+								{
+									"referenceName": "ds_azure_sql",
+									"type": "DatasetReference",
+									"parameters": {
+										"p_ds_databaseName": {
+											"value": "@pipeline().parameters.p_pl_trgt_databaseName",
+											"type": "Expression"
+										},
+										"p_ds_schemaName": {
+											"value": "@pipeline().parameters.p_pl_schemaName",
+											"type": "Expression"
+										},
+										"p_ds_tableName": {
+											"value": "@item().TABLE_NAME",
+											"type": "Expression"
+										}
+									}
+								}
+							]
+						}
+					]
 				}
 			}
 		],
@@ -158,6 +151,9 @@
 			},
 			"tableNames": {
 				"type": "String"
+			},
+			"arrayLength": {
+				"type": "Integer"
 			}
 		},
 		"folder": {
